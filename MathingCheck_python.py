@@ -100,7 +100,7 @@ def clubed_plot(dict_div_sum, div):
         set xlabel "Device"
         set ylabel "Average"
         set grid
-        set xtics format "%s"  # Format x-tics as strings
+        set xtics format "%s"
         plot {2}
         pause -1
     """.format(MAX_GRAPH, MIN_GRAPH, allplots)
