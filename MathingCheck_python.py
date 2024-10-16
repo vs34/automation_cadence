@@ -146,7 +146,7 @@ def main():
     dict_div_sum["squar(X)*squar(Y)"] = calculate_matching_values(mat, div, op_x_squared_y_squared)
 
     list_plot(dict_div_sum, div)
-    clubed_plot(dict_div_sum, div)
+    # clubed_plot(dict_div_sum, div)
 
 # Call the main function
 if __name__ == "__main__":
