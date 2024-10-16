@@ -1,5 +1,5 @@
-import os
 from __future__ import with_statement
+import os
 
 def initialize_matrix():
     """Initialize the matrix from user input."""
