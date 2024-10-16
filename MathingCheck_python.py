@@ -93,6 +93,7 @@ def clubed_plot(dict_div_sum, div):
                 f.write("{0} \"{1}\" {2}\n".format(i, key, dict_div_sum[relation][key]))
         allplots += '"{0}.txt" using 1:3:xtic(2) title "{0} values" with lines linestyle {1},'.format(relation, line_style)
         line_style += 1
+    allplots = allplots[0:-1]
 
     gnuplot_script = """
         set title "Normalized Matchings (MAX = {0}, MIN = {1})"
