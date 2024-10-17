@@ -47,7 +47,7 @@ def op_x_squared_y_squared(x, y): return (x + 1) ** 2 * (y + 1) ** 2
 def plot(sum_dict, div, description):
     """Plot the graph using Gnuplot."""
     # Create a temporary data file
-    with open("plot_data.txt", "w") as f:
+    with open("temp/plot_data.txt", "w") as f:
         for i, key in enumerate(sum_dict.keys(), start=1):
             f.write(f"{i} \"{key}\" {sum_dict[key] / div[key]}\n")  # Assign numeric values for the x-axis, but still display string labels
 
@@ -58,16 +58,16 @@ def plot(sum_dict, div, description):
         set ylabel "Average"
         set grid
         set xtics format "%s"  # Format x-tics as strings
-        plot "plot_data.txt" using 1:3:xtic(2) with linespoints title "{description} values"
+        plot "temp/plot_data.txt" using 1:3:xtic(2) with linespoints title "{description} values"
         pause -1
     """
 
     # Write the Gnuplot script to a file
-    with open("gnuplot_script.gp", "w") as f:
+    with open("temp/gnuplot_script.gp", "w") as f:
         f.write(gnuplot_script)
 
     # Execute Gnuplot with the script
-    os.system("gnuplot gnuplot_script.gp")
+    os.system("gnuplot temp/gnuplot_script.gp")
 
 
 def clubed_plot(dict_div_sum, div):
@@ -90,10 +90,10 @@ def clubed_plot(dict_div_sum, div):
     allplots = ''
     line_style = 1
     for relation in dict_div_sum:
-        with open(relation+".txt","w") as f:
+        with open("temp/"+relation+".txt","w") as f:
             for i, key in enumerate(dict_div_sum[relation].keys(), start=1):
                 f.write(f"{i} \"{key}\" {dict_div_sum[relation][key]}\n")  # normalize this value to be max equal to MAX_GRAPH mand min to MIN_GRAPH
-        allplots += f'"{relation}.txt" using 1:3:xtic(2) title "{relation} values" with line linestyle {line_style},'
+        allplots += f'"temp/{relation}.txt" using 1:3:xtic(2) title "{relation} values" with line linestyle {line_style},'
         line_style += 1
 
     gnuplot_script = f"""
@@ -107,20 +107,20 @@ def clubed_plot(dict_div_sum, div):
     """
 
     # Write the Gnuplot script to a file
-    with open("gnuplot_script.gp", "w") as f:
+    with open("temp/gnuplot_script.gp", "w") as f:
         f.write(gnuplot_script)
 
     # Execute Gnuplot with the script
-    os.system("gnuplot gnuplot_script.gp")
+    os.system("gnuplot temp/gnuplot_script.gp")
 
 def list_plot(dict_div_sum, div):
     """Plot all dictionaries in list_div_sum in the same graph."""
     allplots = ''
     for relation in dict_div_sum:
-        with open(relation+".txt","w") as f:
+        with open("temp/"+relation+".txt","w") as f:
             for i, key in enumerate(dict_div_sum[relation].keys(), start=1):
                 f.write(f"{i} \"{key}\" {dict_div_sum[relation][key] / div[key]}\n")  # Assign numeric values for the x-axis, but still display string labels
-        allplots += f"""plot "{relation+".txt"}" using 1:3:xtic(2) with linespoints title "{relation} values
+        allplots += f"""plot "temp/{relation+".txt"}" using 1:3:xtic(2) with linespoints title "{relation} values
         """
 
     gnuplot_script = f"""
@@ -134,11 +134,11 @@ def list_plot(dict_div_sum, div):
     """
 
     # Write the Gnuplot script to a file
-    with open("gnuplot_script.gp", "w") as f:
+    with open("temp/gnuplot_script.gp", "w") as f:
         f.write(gnuplot_script)
 
     # Execute Gnuplot with the script
-    os.system("gnuplot gnuplot_script.gp")
+    os.system("gnuplot temp/gnuplot_script.gp")
 
 def main():
     mat = initialize_matrix()
@@ -151,24 +151,24 @@ def main():
 
     dict_div_sum["Y"] = calculate_matching_values(mat, div, op_y)
     # print_results(div, sum_dict_2, "y")
-    # plot(sum_dict, div, "y")
+    # plot(sum_dict["Y"], div, "y")
 
     dict_div_sum["squar(X)"] = calculate_matching_values(mat, div, op_x_squared)
     # print_results(div, sum_dict_3, "x^2")
-    # plot(sum_dict, div, "x^2")
+    # plot(sum_dict["squar(X)"], div, "x^2")
 
     dict_div_sum["squar(Y)"] = calculate_matching_values(mat, div, op_y_squared)
     # print_results(div, sum_dict_4, "y^2")
-    # plot(sum_dict, div, "y^2")
+    # plot(sum_dict["squar(Y)"], div, "y^2")
 
     dict_div_sum["X*Y"] = calculate_matching_values(mat, div, op_xy)
     # print_results(div, sum_dict_5, "x*y")
-    # plot(sum_dict, div, "x*y")
+    # plot(sum_dict["X*Y"], div, "x*y")
 
     dict_div_sum["squar(X)*squar(Y)"] = calculate_matching_values(mat, div, op_x_squared_y_squared)
-    # print_results(div, sum_dict_6, "x^2*y^2")
-    # plot(sum_dict, div, "x^2 + y^2")
-    # list_plot(dict_div_sum,div)
+    # print_results("div[squar(X)*squar(Y)"], sum_dict_6, "x^2*y^2")
+    # plot(dict_div_sum, div, "x^2 + y^2")
+    list_plot(dict_div_sum,div)
     clubed_plot(dict_div_sum,div)
 # Call the main function
 if __name__ == "__main__":

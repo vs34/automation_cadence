@@ -47,7 +47,7 @@ def op_x_squared_y_squared(x, y): return (x + 1) ** 2 * (y + 1) ** 2
 def plot(sum_dict, div, description):
     """Plot the graph using Gnuplot."""
     # Create a temporary data file
-    with open("plot_data.txt", "w") as f:
+    with open("temp/plot_data.txt", "w") as f:
         for i, key in enumerate(sum_dict.keys(), start=1):
             f.write("{0} \"{1}\" {2}\n".format(i, key, float(sum_dict[key]) / div[key]))
 
@@ -58,16 +58,16 @@ def plot(sum_dict, div, description):
         set ylabel "Average"
         set grid
         set xtics format "%s"  # Format x-tics as strings
-        plot "plot_data.txt" using 1:3:xtic(2) with linespoints title "{0} values"
+        plot "temp/plot_data.txt" using 1:3:xtic(2) with linespoints title "{0} values"
         pause -1
     """.format(description)
 
     # Write the Gnuplot script to a file
-    with open("gnuplot_script.gp", "w") as f:
+    with open("temp/gnuplot_script.gp", "w") as f:
         f.write(gnuplot_script)
 
     # Execute Gnuplot with the script
-    os.system("gnuplot gnuplot_script.gp")
+    os.system("gnuplot temp/gnuplot_script.gp")
 
 def clubed_plot(dict_div_sum, div):
     """Plot all dictionaries in list_div_sum on one graph with different colors."""
@@ -88,12 +88,12 @@ def clubed_plot(dict_div_sum, div):
     allplots = ''
     line_style = 1
     for relation in dict_div_sum:
-        with open(relation + ".txt", "w") as f:
+        with open("temp/" + relation + ".txt", "w") as f:
             for i, key in enumerate(dict_div_sum[relation].keys(), start=1):
                 f.write("{0} \"{1}\" {2}\n".format(i, key, dict_div_sum[relation][key]))
-        allplots += '"{0}.txt" using 1:3:xtic(2) title "{0} values" with lines linestyle {1},'.format(relation, line_style)
+        allplots += '"temp/{0}.txt" using 1:3:xtic(2) title "{0} values" with lines linestyle {1},'.format(relation, line_style)
         line_style += 1
-    allplots = allplots[0:-1]
+    allplots = allplots[:-1]
 
     gnuplot_script = """
         set title "Normalized Matchings (MAX = {0}, MIN = {1})"
@@ -105,19 +105,19 @@ def clubed_plot(dict_div_sum, div):
         pause -1
     """.format(MAX_GRAPH, MIN_GRAPH, allplots)
 
-    with open("gnuplot_script.gp", "w") as f:
+    with open("temp/gnuplot_script.gp", "w") as f:
         f.write(gnuplot_script)
 
-    os.system("gnuplot gnuplot_script.gp")
+    os.system("gnuplot temp/gnuplot_script.gp")
 
 def list_plot(dict_div_sum, div):
     """Plot all dictionaries in list_div_sum in the same graph."""
     allplots = ''
     for relation in dict_div_sum:
-        with open(relation + ".txt", "w") as f:
+        with open("temp/" + relation + ".txt", "w") as f:
             for i, key in enumerate(dict_div_sum[relation].keys(), start=1):
                 f.write("{0} \"{1}\" {2}\n".format(i, key, float(dict_div_sum[relation][key]) / div[key]))
-        allplots += 'plot "{0}.txt" using 1:3:xtic(2) with linespoints title "{0} values\n'.format(relation)
+        allplots += 'plot "temp/{0}.txt" using 1:3:xtic(2) with linespoints title "{0} values\n'.format(relation)
 
     gnuplot_script = """
         set xlabel "Device"
@@ -129,10 +129,10 @@ def list_plot(dict_div_sum, div):
         pause -1
     """.format(int(len(dict_div_sum) ** 0.5), int(len(dict_div_sum) ** 0.5) if len(dict_div_sum) ** 2 == len(dict_div_sum) else int(len(dict_div_sum) ** 0.5) + 1, allplots)
 
-    with open("gnuplot_script.gp", "w") as f:
+    with open("temp/gnuplot_script.gp", "w") as f:
         f.write(gnuplot_script)
 
-    os.system("gnuplot gnuplot_script.gp")
+    os.system("gnuplot temp/gnuplot_script.gp")
 
 def main():
     mat = initialize_matrix()
